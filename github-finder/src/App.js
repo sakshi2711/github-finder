@@ -11,7 +11,7 @@ constructor(props){
   super(props);
 
   this.state = {
-    idToken:'',
+    accessToken:'',
     profile:{}
   };
 }
@@ -23,22 +23,71 @@ constructor(props){
 
   componentWillMount(){
     this.lock=new Auth0Lock(this.props.clientID, this.props.domain);
-    // Listening for the authenticated event
-    this.lock.on("authenticated", function(authResult) {
-      console.log(authResult);
-
-  });
+    this.lock.on("authenticated", (authResult)=>{
+      this.lock.getUserInfo(authResult.accessToken, (error, profile) => {
+        if(error){
+          console.log(error);
+          return;
+        }
+        this.setProfile(authResult.accessToken, profile);
+      });
+    });
+    this.getProfile();
   }
+
+  setProfile(accessToken, profile){
+    localStorage.setItem('accessToken',accessToken);
+    localStorage.setItem('profile', JSON.stringify(profile));
+
+    this.setState({
+      accessToken: localStorage.getItem('acessToken'),
+      profile: JSON.parse(localStorage.getItem('profile'))
+    });
+  }
+
+  getProfile(){
+    if(localStorage.getItem('accessToken')!=null){
+      this.setState({
+        accessToken:localStorage.getItem('accessToken'),
+        profile: JSON.parse(localStorage.getItem('profile'))
+      },()=>{
+        console.log(this.state);
+      });
+    }
+  }
+
   showLock(){
     this.lock.show();
   }
 
+  logout(){
+    this.setState({
+      accessToken:'',
+      profile:''
+    },()=>{
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('profile');
+    })
+  }
+
 render() {
+  let islog;
+  if(localStorage.accessToken){
+    islog= <Github/>
+  }
+  else {
+    islog= "Please login to view Github Finder";
+  }
     return (
       <div className="App">
-        <Header onLogin={this.showLock.bind(this)}
+        <Header
+           lock={this.lock}
+           accessToken={localStorage.accessToken}
+           onLogout={this.logout.bind(this)}
+           onLogin={this.showLock.bind(this)}
           />
-        <Github/>
+        {islog}
+
 
       </div>
     );

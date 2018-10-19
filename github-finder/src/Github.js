@@ -5,7 +5,7 @@ class Github extends Component {
   render(){
     return(
       <div>
-        
+        Welcome to Gitub Finder
       </div>
     );
   }
