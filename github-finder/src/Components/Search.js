@@ -4,10 +4,6 @@ import React, { Component } from 'react';
 
 class Search extends Component {
 
-  // searchProfile(){
-  //   this.props.searchProfile();
-  // }
-
   submit(event){
     event.preventDefault();
     let value=this.refs.username.value;
@@ -21,7 +17,7 @@ class Search extends Component {
       <div className="search-box">
         <form onSubmit={this.submit.bind(this)}>
           <label>
-            <input type="search" ref="username" placeholder="Type a username and hit Enter"/>
+            <input type="search" ref="username" placeholder="Type a username"/>
           </label>
         </form>
       </div>

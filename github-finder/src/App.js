@@ -76,7 +76,7 @@ render() {
     islog= <Github/>
   }
   else {
-    islog= "Please login to view Github Finder";
+    islog= <div id='login-msg'>Please login to view Github Finder</div>;
   }
     return (
       <div className="App">
